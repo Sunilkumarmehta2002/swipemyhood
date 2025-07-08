@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Settings, Users, MessageSquare, BarChart3, Key, 
-  Mail, Phone, MapPin, Eye, Edit, Trash2, Reply,
-  UserPlus, Download, Filter, Search, Calendar,
-  TrendingUp, TrendingDown, Activity, Shield
+  Settings, Users, MessageSquare, BarChart3, Key, Edit, Trash2, Reply,
+  UserPlus, Download, Search, Activity, Shield
 } from 'lucide-react';
 import { 
-  collection, getDocs, query, orderBy, limit, 
+  collection, getDocs, query, orderBy,
   doc, updateDoc, deleteDoc, addDoc, where,
   Timestamp, setDoc 
 } from 'firebase/firestore';
@@ -15,7 +13,6 @@ import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { deleteUser as firebaseDeleteUser } from 'firebase/auth';
 
 interface AdminStats {
   totalUsers: number;
@@ -404,7 +401,20 @@ export function AdminPage() {
     setAdminLoading(true);
     try {
       const snap = await getDocs(query(collection(db, 'users'), where('isAdmin', '==', true)));
-      setAdminUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setAdminUsers(
+        snap.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            email: data.email || '',
+            name: data.name || '',
+            createdAt: data.createdAt || Timestamp.now(),
+            isAdmin: typeof data.isAdmin === 'boolean' ? data.isAdmin : false,
+            lastActive: data.lastActive || null,
+            superAdmin: typeof data.superAdmin === 'boolean' ? data.superAdmin : false,
+          } as User;
+        })
+      );
     } catch (err) {
       toast.error('Failed to load admin users');
     } finally {
