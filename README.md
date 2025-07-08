@@ -36,6 +36,10 @@
 Many urban newcomers struggle to choose the right neighborhood that suits their lifestyle. **SwipeMyHood** bridges this gap by combining user preferences, public data, and ML-driven matching to deliver personalized neighborhood recommendations in Bangalore.
 
 ---
+🔗 **Live Deployed App:**  
+👉 [https://swipemyhood.vercel.app/](https://swipemyhood.vercel.app/)
+
+---
 
 ## ✨ Features
 
